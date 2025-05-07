@@ -1,80 +1,103 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern CodePen Clone</title>
 
-    <!-- ✅ Google Font Poppins -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern CodePen Clone - Script Box</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              roboto: ['Poppins', 'sans-serif'],
-            },
+  <!-- ✅ Google Font Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            roboto: ['Poppins', 'sans-serif'],
           },
         },
-      };
-    </script>
+      },
+    };
+  </script>
 
-    <!-- CodeMirror CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/dracula.css"
-    />
+  <!-- CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/dracula.css" />
 
-    <style>
-      .CodeMirror {
-        height: auto;
-        font-size: 14px;
-        border-radius: 10px;
-        flex: 1;
-        cursor: text;
-      }
-      label {
-        user-select: none;
-      }
-      textarea {
-        overflow-x: hidden;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-      }
+  <!-- JSZip and FileSaver.js for Download Feature -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-      ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-        background: transparent;
-      }
+  <style>
+    .CodeMirror {
+      height: auto;
+      font-size: 12px;
+      border-radius: 10px;
+      flex: 1;
+      cursor: text;
+    }
 
-      ::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.5);
-        border-radius: 10px;
-      }
-    </style>
-  </head>
-  <body
-    class="bg-gray-900 text-white p-4 flex gap-4 h-screen relative font-roboto"
-  >
-    <!-- Switch Toggle -->
+    label {
+      user-select: none;
+    }
+
+    textarea {
+      overflow-x: hidden;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white h-screen relative font-roboto">
+  <!-- Logo Section -->
+  <div class="flex items-center justify-between gap-2 z-10 p-4 bg-gray-950">
+    <h1 class="text-xl font-semibold">Script Box</h1>
+    <div>
+      <div class="flex items-center gap-2 z-10">
+        <button id="downloadBtn"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded-md transition-colors duration-300">
+          Download
+        </button>
+        <label for="toggleOutput" class="text-sm font-medium flex items-center gap-2 cursor-pointer">
+          Output Only
+          <div class="relative inline-block w-10 h-5">
+            <input type="checkbox" id="toggleOutput" class="sr-only peer" />
+            <div
+              class="w-full h-full bg-gray-600 rounded-full peer-checked:bg-indigo-500 transition-colors duration-300">
+            </div>
+            <div
+              class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-5">
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Switch Toggle -->
+
+  <div class="flex gap-4 h-[calc(100vh_-_63.75px)] relative font-roboto  p-4">
 
     <!-- Code Editors -->
-    <div
-      id="editor-section"
-      class="flex flex-col *:flex-1 *:flex *:flex-col *:max-h-[calc(100%_/_3)] gap-4 flex-[0_0_320px] max-w-[320px]"
-    >
+    <div id="editor-section"
+      class="flex flex-col gap-4 flex-[0_0_320px] max-w-[320px] *:flex-1 *:flex *:flex-col *:max-h-[calc(100%_/_3)]">
       <div>
         <h2 class="mb-2 text-sm font-medium">HTML</h2>
         <textarea class="rounded-md" id="html-editor"></textarea>
@@ -93,94 +116,89 @@
     <div id="output-section" class="flex flex-1 flex-col">
       <div class="flex items-end justify-between mb-2">
         <h2 class="text-sm font-medium">Output</h2>
-        <div class="flex items-center gap-2 z-10">
-          <label
-            for="toggleOutput"
-            class="text-sm font-medium flex items-center gap-2 cursor-pointer"
-          >
-            Output Only
-            <div class="relative inline-block w-10 h-5">
-              <input type="checkbox" id="toggleOutput" class="sr-only peer" />
-              <div
-                class="w-full h-full bg-gray-600 rounded-full peer-checked:bg-indigo-500 transition-colors duration-300"
-              ></div>
-              <div
-                class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-5"
-              ></div>
-            </div>
-          </label>
-        </div>
       </div>
-      <iframe
-        id="output"
-        class="w-full h-64 bg-white rounded-[10px] flex-1"
-      ></iframe>
+      <iframe id="output" class="w-full h-64 bg-white rounded-[10px] flex-1"></iframe>
     </div>
+  </div>
 
-    <!-- CodeMirror Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/css/css.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.js"></script>
+  <!-- CodeMirror Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/css/css.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.js"></script>
 
-    <script>
-      const htmlEditor = CodeMirror.fromTextArea(
-        document.getElementById('html-editor'),
-        {
-          mode: 'xml',
-          theme: 'dracula',
-          lineNumbers: true,
-        }
-      );
-
-      const cssEditor = CodeMirror.fromTextArea(
-        document.getElementById('css-editor'),
-        {
-          mode: 'css',
-          theme: 'dracula',
-          lineNumbers: true,
-        }
-      );
-
-      const jsEditor = CodeMirror.fromTextArea(
-        document.getElementById('js-editor'),
-        {
-          mode: 'javascript',
-          theme: 'dracula',
-          lineNumbers: true,
-        }
-      );
-
-      function compile() {
-        const html = htmlEditor.getValue();
-        const css = `<style>${cssEditor.getValue()}</style>`;
-        const js = `<script>${jsEditor.getValue()}<\/script>`;
-        document.getElementById('output').srcdoc = html + css + js;
+  <script>
+    const htmlEditor = CodeMirror.fromTextArea(
+      document.getElementById('html-editor'),
+      {
+        mode: 'xml',
+        theme: 'dracula',
+        lineNumbers: true,
       }
+    );
 
-      htmlEditor.on('change', compile);
-      cssEditor.on('change', compile);
-      jsEditor.on('change', compile);
-      compile();
+    const cssEditor = CodeMirror.fromTextArea(
+      document.getElementById('css-editor'),
+      {
+        mode: 'css',
+        theme: 'dracula',
+        lineNumbers: true,
+      }
+    );
 
-      // Toggle output fullscreen via switch
-      const toggleSwitch = document.getElementById('toggleOutput');
-      const editorSection = document.getElementById('editor-section');
-      const outputIframe = document.getElementById('output');
+    const jsEditor = CodeMirror.fromTextArea(
+      document.getElementById('js-editor'),
+      {
+        mode: 'javascript',
+        theme: 'dracula',
+        lineNumbers: true,
+      }
+    );
 
-      toggleSwitch.addEventListener('change', () => {
-        const isFullscreen = toggleSwitch.checked;
+    function compile() {
+      const html = htmlEditor.getValue();
+      const css = `<style>${cssEditor.getValue()}</style>`;
+      const js = `<script>${jsEditor.getValue()}<\/script>`;
+      document.getElementById('output').srcdoc = html + css + js;
+    }
 
-        if (isFullscreen) {
-          editorSection.classList.add('hidden');
-          outputIframe.classList.remove('h-64');
-          outputIframe.classList.add('h-full');
-        } else {
-          editorSection.classList.remove('hidden');
-          outputIframe.classList.remove('h-full');
-          outputIframe.classList.add('h-64');
-        }
+    htmlEditor.on('change', compile);
+    cssEditor.on('change', compile);
+    jsEditor.on('change', compile);
+    compile();
+
+    // Download the HTML, CSS, and JS as a zip file
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const zip = new JSZip();
+      zip.file('index.html', htmlEditor.getValue());
+      zip.file('style.css', cssEditor.getValue());
+      zip.file('script.js', jsEditor.getValue());
+
+      // Generate zip file and trigger download
+      zip.generateAsync({ type: 'blob' }).then(function (content) {
+        saveAs(content, 'project.zip');
       });
-    </script>
-  </body>
+    });
+
+    // Toggle output fullscreen via switch
+    const toggleSwitch = document.getElementById('toggleOutput');
+    const editorSection = document.getElementById('editor-section');
+    const outputIframe = document.getElementById('output');
+
+    toggleSwitch.addEventListener('change', () => {
+      const isFullscreen = toggleSwitch.checked;
+
+      if (isFullscreen) {
+        editorSection.classList.add('hidden');
+        outputIframe.classList.remove('h-64');
+        outputIframe.classList.add('h-full');
+      } else {
+        editorSection.classList.remove('hidden');
+        outputIframe.classList.remove('h-full');
+        outputIframe.classList.add('h-64');
+      }
+    });
+  </script>
+</body>
+
 </html>
